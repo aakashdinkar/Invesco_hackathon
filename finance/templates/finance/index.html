@@ -8,24 +8,58 @@
     <title>Document</title>
 </head>
 <body>
-    <input type="text" name="" id="qoute">
-    <button id="btn">Get Quote</button>
+    <div id="table_container">
+    </div>
 </body>
 <script>
-    $('#btn').on('click', function(){
-        var qoute = $('#qoute').val();
-        // console.log(qoute);
+    $(document).ready(function(){
+        var data = {}
+        data.start_date = $('#start_date').val();
+        data.end_date = $('#end_date').val();
+        data.tickers = [];
+        $('.user_input:checked').each(function(){
+          data.tickers.push($(this).val());
+        });
+        data.amount = $('#amount').val();
         $.ajax({
-            url: 'fetch_qoute',
-            type: 'POST',
-            dataType: 'json',
-            data:{
-                'qoutes':qoute
-            },
-            success: function(data){
-                console.log('coming data', data);
-            }
-        })
-    })
+          url: 'calculate_ticker_data',
+          type: 'POST',
+          data: data,
+          dataType: 'json',
+          success: function(response){
+            create_ticker_table(response);
+          },
+          error: function(response){
+            console.log(response);
+          }
+        });
+      })
+
+function create_dataset(data){
+  var dataset = [];
+  var data_keys = Object.keys(data);
+  for(var i = 0; i < data[data_keys[0]].length; i++){
+    var row = [];
+    for(var j = 0; j < data_keys.length; j++){
+      row.push(data[data_keys[j]][i]);
+    }
+    dataset.push(row);
+  }
+  return [dataset, data_keys];
+}
+
+function create_ticker_table(tickers){
+  var ticker_list = Object.keys(tickers);
+    for (var i = 0; i < ticker_list.length; i++) {
+      var table = `<table id="#${ticker_list[i]}_data"><table>`
+      $('#table_container').append(table);
+      var data = create_dataset(tickers[ticker_list[i]]['cumulative'])
+      console.log(data);
+      $(`#${ticker_list[i]}_data`).DataTable({
+        data :data[0],
+        columns: data[1]
+      })
+    }
+}
 </script>
 </html>

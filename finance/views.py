@@ -9,7 +9,7 @@ import requests
 
 
 def homepage(request):
-    return render(request, 'finance/invescoFrontEnd.html')
+    return render(request, 'finance/index.html')
 
 @csrf_exempt
 def ticker_info(request):
