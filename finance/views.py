@@ -60,6 +60,7 @@ def calculate_ticker_data(request):
     dashboard = dict()
     for ticker in tickers:
         stock[ticker] = get_stock_dataframe(ticker)
+        stock[ticker].round(2)
         cumulative, annualize = get_performance(ticker)
         dashboard[ticker] = {'cumulative':cumulative,'annualize':annualize}
     return HttpResponse(json.dumps(dashboard))

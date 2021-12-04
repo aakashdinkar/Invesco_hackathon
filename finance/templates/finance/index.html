@@ -12,6 +12,21 @@
     <title>Document</title>
 </head>
 <body>
+  <style text="text/css">
+    .loading {
+      border: 16px solid #f3f3f3; /* Light grey */
+      border-top: 16px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Navbar</a>
@@ -47,7 +62,7 @@
 
     <div id="table_container">
       
-        APPLE
+        <h2>APPLE</h2>
         <table id="AAPL_data">
             <thead>
                 <tr>
@@ -58,7 +73,8 @@
                 </tr>
             </thead>
         </table>
-        MICROSOFT
+        
+        <h2>MICROSOFT</h2>
         <table id="MSFT_data">
             <thead>
                 <tr>
@@ -69,7 +85,8 @@
                 </tr>
             </thead>
         </table>
-        AMAZON
+        <div class='loading'></div>
+        <h2>AMAZON</h2>
         <table id="AMZN_data">
             <thead>
                 <tr>
@@ -80,7 +97,8 @@
                 </tr>
             </thead>
         </table>
-        FACEBOOK
+        <div class='loading'></div>
+        <h2>FACEBOOK</h2>
         <table id="FB_data">
             <thead>
                 <tr>
@@ -91,7 +109,8 @@
                 </tr>
             </thead>
         </table>
-        TESLA
+        <div class='loading'></div>
+        <h2>TESLA</h2>
         <table id="TSLA_data">
             <thead>
                 <tr>
@@ -102,7 +121,8 @@
                 </tr>
             </thead>
         </table>
-        NASDAQ 100
+        <div class='loading'></div>
+        <h2>NASDAQ 100</h2>
         <table id="NDX_data">
             <thead>
                 <tr>
@@ -113,6 +133,7 @@
                 </tr>
             </thead>
         </table>
+        <div class='loading'></div>
     </div>
 </body>
 <script>
@@ -164,6 +185,7 @@ function create_ticker_table(tickers){
       })
       console.log('datatable is builing', x)
     }
+    $('.loading').hide();
 }
 </script>
 </html>
