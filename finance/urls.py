@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.homepage),
     path('ticker_info', views.ticker_info),
     path('calculate_ticker_data', views.calculate_ticker_data),
+    path('investment_strategy', views.investment_strategy),
 ]

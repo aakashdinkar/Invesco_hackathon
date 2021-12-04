@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-g=)09yc!nb#@@4-v3n9-_2t#qi5fu-72i-vk0^!ijo(8(h0b7p'
 YAHOO_API = 'https://yfapi.net/v6/finance/'
-API_KEY = 'zqKMQGhqkuafWtdhUEKT91oQTvdWmoTLMSy7WDAi'
+API_KEY = 'AdSgujTsHSaQmzbN49Evf6UekqCR4iWyPBLUEYp6'
+# 'zqKMQGhqkuafWtdhUEKT91oQTvdWmoTLMSy7WDAi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

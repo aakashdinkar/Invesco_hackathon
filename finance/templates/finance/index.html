@@ -11,6 +11,72 @@
 </head>
 <body>
     <div id="table_container">
+        NASDAQ
+        <table id="NDX_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
+        APPLE
+        <table id="AAPL_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
+        MICROSOFT
+        <table id="MSFT_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
+        AMAZON
+        <table id="AMZN_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
+        FACEBOOK
+        <table id="FB_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
+        TESLA
+        <table id="TSLA_data">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Stock</th>
+                    <th>BenchMark</th>
+                    <th>Active Return</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </body>
 <script>
@@ -53,14 +119,14 @@ function create_dataset(data){
 function create_ticker_table(tickers){
   var ticker_list = Object.keys(tickers);
     for (var i = 0; i < ticker_list.length; i++) {
-      var table = `<table id="#${ticker_list[i]}_data"><table>`
-      $('#table_container').append(table);
+    //   var table = `<table id="#${ticker_list[i]}_data"><table>`
+    //   $('#table_container').append(table);
       var data = create_dataset(tickers[ticker_list[i]]['cumulative'])
-      console.log(data);
-      $(`#${ticker_list[i]}_data`).DataTable({
-        data :data[0],
-        columns: data[1]
+    //   console.log(data, `#${ticker_list[i]}_data`);
+      var x = $(`#${ticker_list[i]}_data`).DataTable({
+        data :data[0]
       })
+      console.log('datatable is builing', x)
     }
 }
 </script>

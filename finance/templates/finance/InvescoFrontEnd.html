@@ -41,8 +41,8 @@
             <input type="submit" id=submit>
         </b>
         <!-- </form> -->
-        <div id="table_container">
-        table data
+        <div id="">
+        Amount to be invested : <span id="invested_amount"></span>
         </div>
         
     </div>
@@ -96,7 +96,29 @@
           }
         });
       });
-      
+
+      $('#submit').on('click', function(){
+        var from_date = $('#start_date').val()
+        var end_date = $('#end_date').val()
+        var amount = $('#amount').val()
+        $.ajax({
+          url:'investment_strategy',
+          type:'POST',
+          dataType:'json',
+          data:{
+            'from_date':from_date,
+            'end_date':end_date,
+            'amount':amount
+          },
+          success: function(response){
+            $('#invested_amount').html(response.invested_amount);
+          },
+          error: function(response){
+            console.log(response);
+          }
+        })
+      })
+
 //     function getGraph(){
 //         var xData = [
 //   [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
