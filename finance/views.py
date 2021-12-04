@@ -124,7 +124,7 @@ def get_performance(ticker,stock):
     
     return cumulative, annualize
 
-def Momentum_strategy(AAPL_MR,AMZN_MR,FB_MR,MSFT_MR,TSLA_MR, y):
+def Momentum_strategy(AAPL_MR,AMZN_MR,FB_MR,MSFT_MR,TSLA_MR, y,money):
     
     for i in range (1,y-2):
         temp = [AAPL_MR[i], AMZN_MR[i], FB_MR[i], MSFT_MR[i], TSLA_MR[i]]
@@ -143,24 +143,25 @@ def Momentum_strategy(AAPL_MR,AMZN_MR,FB_MR,MSFT_MR,TSLA_MR, y):
             money = money*(TSLA_MR[i+1]+1)
     return money
 
-def Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, y):
-    AAPL_ret = (((AAPL_list[y-1]-AAPL_list[1])/AAPL_list[1])+1)*2000
+def Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, y, investment):
+    AAPL_ret = (((AAPL_list[y-1]-AAPL_list[1])/AAPL_list[1])+1)*investment
     print(AAPL_ret)
-    AMZN_ret = (((AMZN_list[y-1]-AMZN_list[1])/AMZN_list[1])+1)*2000
+    AMZN_ret = (((AMZN_list[y-1]-AMZN_list[1])/AMZN_list[1])+1)*investment
     print(AMZN_ret)
-    FB_ret = (((FB_list[y-1]-FB_list[1])/FB_list[1])+1)*2000
+    FB_ret = (((FB_list[y-1]-FB_list[1])/FB_list[1])+1)*investment
     print(FB_ret)
-    MSFT_ret = (((MSFT_list[y-1]-MSFT_list[1])/MSFT_list[1])+1)*2000
+    MSFT_ret = (((MSFT_list[y-1]-MSFT_list[1])/MSFT_list[1])+1)*investment
     print(MSFT_ret)
-    TSLA_ret = (((TSLA_list[y-1]-TSLA_list[1])/TSLA_list[1])+1)*2000
+    TSLA_ret = (((TSLA_list[y-1]-TSLA_list[1])/TSLA_list[1])+1)*investment
     print(TSLA_ret)
     total = AAPL_ret + AMZN_ret + FB_ret + MSFT_ret + TSLA_ret
-    print(total)
+    return total
 
 
 def investment(start_date, end_date, investment_amount):
     start_date = start_date.strftime('%Y-%m-%d')
     end_date = end_date.strftime('%Y-%m-%d')
+    y = (end_date - start_date).months
     tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
     stock = dict()
     for ticker in tickers:
@@ -171,8 +172,8 @@ def investment(start_date, end_date, investment_amount):
     FB_list = stock['FB']['Monthly Return Perc'].tolist()
     MSFT_list = stock['MSFT']['Monthly Return Perc'].tolist()
     TSLA_list = stock['TSLA']['Monthly Return Perc'].tolist()
-    normal = Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, investment_amount)
-    momentum = Momentum_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, investment_amount)
+    normal = Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, y,investment_amount)
+    momentum = Momentum_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list,y, investment_amount)
     return normal, momentum
 
 # def investment(start_date,end_date,investment):
