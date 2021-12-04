@@ -32,12 +32,13 @@ def create_session():
     session.headers['x-api-key'] = settings.API_KEY
     return session
 
-def get_stock_dataframe(ticker,start_date='2015-12-31',end_date='2021-12-31'):
+def get_stock_dataframe(ticker,start_date='2015-12-01',end_date='2021-12-31'):
     df =  yfinance.download(ticker, start=start_date, end=end_date,interval ="1mo",session=create_session())
     df_adjclose = df.drop(['Open','High','Low','Close','Volume'], axis = 1)
     df_adjclose=df_adjclose.dropna()
     df_adjclose['Monthly Return'],df_adjclose['Monthly Return Perc'] = calculate_monthly_return(df_adjclose)
     return df_adjclose
+
 
 def calculate_monthly_return(df):
     """Calculate the monthly return of the stock"""
@@ -51,6 +52,8 @@ def calculate_monthly_return(df):
         monthly_return_perc.append((month_adj_close - previous_adj_close)/previous_adj_close)
     return monthly_return,monthly_return_perc
 
+    
+
 
 @csrf_exempt
 def calculate_ticker_data(request):
@@ -60,8 +63,8 @@ def calculate_ticker_data(request):
     dashboard = dict()
     for ticker in tickers:
         stock[ticker] = get_stock_dataframe(ticker)
-        stock[ticker].round(2)
-        cumulative, annualize = get_performance(ticker)
+        # stock[ticker].round(2)
+        cumulative, annualize = get_performance(ticker,stock)
         dashboard[ticker] = {'cumulative':cumulative,'annualize':annualize}
     return HttpResponse(json.dumps(dashboard))
     
@@ -92,14 +95,8 @@ def calculate_annualize_return(df,months=12):
     out = (out**(12/months))-1
     return out, out*100
 
-def get_performance(ticker):
-    stock = dict()
-    dashboard = dict()
-    start_date = '2015-01-01'
-    end_date = '2021-12-31'
-    tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
-    for ticker in tickers:
-        stock[ticker] = get_stock_dataframe(ticker)
+def get_performance(ticker,stock):
+
     cumulative = {
         'period':['1M','3M','6M','1Y','2Y','3Y','5Y'],
         'stock':[],
