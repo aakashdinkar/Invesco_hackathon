@@ -32,8 +32,8 @@ def create_session():
     session.headers['x-api-key'] = settings.API_KEY
     return session
 
-def get_stock_dataframe(ticker):
-    df =  yfinance.download(ticker, start="2015-12-01", end="2020-12-31",interval ="1mo",session=create_session())
+def get_stock_dataframe(ticker,start_date,end_date):
+    df =  yfinance.download(ticker, start=start_date, end=end_date,interval ="1mo",session=create_session())
     df_adjclose = df.drop(['Open','High','Low','Close','Volume'], axis = 1)
     df_adjclose=df_adjclose.dropna()
     df_adjclose['Monthly Return'],df_adjclose['Monthly Return Perc'] = calculate_monthly_return(df_adjclose)
@@ -51,11 +51,7 @@ def calculate_monthly_return(df):
         monthly_return_perc.append((month_adj_close - previous_adj_close)/previous_adj_close)
     return monthly_return,monthly_return_perc
 
-stock = dict()
-dashboard = dict()
-tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
-for ticker in tickers:
-    stock[ticker] = get_stock_dataframe(ticker)
+
 @csrf_exempt
 def calculate_ticker_data(request):
     tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
@@ -94,6 +90,13 @@ def calculate_annualize_return(df,months=12):
     return out, out*100
 
 def get_performance(ticker):
+    stock = dict()
+    dashboard = dict()
+    start_date = '2015-01-01'
+    end_date = '2021-12-31'
+    tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
+    for ticker in tickers:
+        stock[ticker] = get_stock_dataframe(ticker)
     cumulative = {
         'period':['1M','3M','6M','1Y','2Y','3Y','5Y'],
         'stock':[],
@@ -122,7 +125,6 @@ def get_performance(ticker):
     return cumulative, annualize
 
 def Momentum_strategy(AAPL_MR,AMZN_MR,FB_MR,MSFT_MR,TSLA_MR, y):
-    money = 10000
     
     for i in range (1,y-2):
         temp = [AAPL_MR[i], AMZN_MR[i], FB_MR[i], MSFT_MR[i], TSLA_MR[i]]
@@ -156,55 +158,72 @@ def Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, y):
     print(total)
 
 
-def investment(start_date,end_date,investment):
-    stock_list = ['AAPL','MSFT','AMZN','FB','TSLA']
+def investment(start_date, end_date, investment_amount):
     start_date = start_date.strftime('%Y-%m-%d')
     end_date = end_date.strftime('%Y-%m-%d')
-    tickers_length = len(stock_list)
-    
-    normal = 0
-     # Caclulate investment return for equal trading strategy
-    for ticker in stock_list:
-        df = stock[ticker][start_date:end_date]
-        result = 0
-        for index in range(len(df.index)):
-            result += (df.iloc[index]['Monthly Return Perc']* (investment/tickers_length))+(investment/tickers_length)
-        normal += result
+    tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
+    stock = dict()
+    for ticker in tickers:
+        stock[ticker] = get_stock_dataframe(ticker)
 
-    momentum = investment
-    length = 0
-    returns = []
+    AAPL_list = stock['AAPL']['Monthly Return Perc'].tolist()
+    AMZN_list = stock['AMZN']['Monthly Return Perc'].tolist()
+    FB_list = stock['FB']['Monthly Return Perc'].tolist()
+    MSFT_list = stock['MSFT']['Monthly Return Perc'].tolist()
+    TSLA_list = stock['TSLA']['Monthly Return Perc'].tolist()
+    normal = Normal_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, investment_amount)
+    momentum = Momentum_strategy(AAPL_list,AMZN_list,FB_list,MSFT_list,TSLA_list, investment_amount)
+    return normal, momentum
+
+# def investment(start_date,end_date,investment):
+#     stock_list = ['AAPL','MSFT','AMZN','FB','TSLA']
+#     start_date = start_date.strftime('%Y-%m-%d')
+#     end_date = end_date.strftime('%Y-%m-%d')
+#     tickers_length = len(stock_list)
     
-    # Next ticker for first investment
-    try:
-        for ticker in stock_list:
-            returns.append(stock[ticker][stock[ticker].index<start_date].iloc[-1]['Monthly Return Perc'])
-        next_ticker = stock_list[returns.index(max(returns))]
-    except:
-        next_ticker = 'AAPL'
+#     normal = 0
+#      # Caclulate investment return for equal trading strategy
+#     for ticker in stock_list:
+#         df = stock[ticker][start_date:end_date]
+#         result = 0
+#         for index in range(len(df.index)):
+#             result += (df.iloc[index]['Monthly Return Perc']* (investment/tickers_length))+(investment/tickers_length)
+#         normal += result
+
+#     momentum = investment
+#     length = 0
+#     returns = []
     
-    # Filter out stock list within date range
-    for ticker in stock_list:
-        stock[ticker] = stock[ticker][start_date:end_date]
-        length = len(stock[ticker].index)
+#     # Next ticker for first investment
+#     try:
+#         for ticker in stock_list:
+#             returns.append(stock[ticker][stock[ticker].index<start_date].iloc[-1]['Monthly Return Perc'])
+#         next_ticker = stock_list[returns.index(max(returns))]
+#     except:
+#         next_ticker = 'AAPL'
+    
+#     # Filter out stock list within date range
+#     for ticker in stock_list:
+#         stock[ticker] = stock[ticker][start_date:end_date]
+#         length = len(stock[ticker].index)
 
      
-    # Caclulate investment return for momentum trading strategy
-    for index in range(length):
-        momentum += (stock[next_ticker].iloc[index]['Monthly Return Perc']/100*(momentum) )
-        maximum = -float('inf')
-        for ticker in stock_list:
-            if maximum<=stock[ticker].iloc[index]['Monthly Return Perc']:
-                maximum = stock[ticker].iloc[index]['Monthly Return Perc']
-                next_ticker = ticker
+#     # Caclulate investment return for momentum trading strategy
+#     for index in range(length):
+#         momentum += (stock[next_ticker].iloc[index]['Monthly Return Perc']/100*(momentum) )
+#         maximum = -float('inf')
+#         for ticker in stock_list:
+#             if maximum<=stock[ticker].iloc[index]['Monthly Return Perc']:
+#                 maximum = stock[ticker].iloc[index]['Monthly Return Perc']
+#                 next_ticker = ticker
 
-    return normal, momentum
+#     return normal, momentum
 
 @csrf_exempt
 def investment_strategy(request):
     if request.method == 'POST':
         print(request.POST['from_date'], request.POST['end_date'], request.POST['amount'])
-        from_date = request.POST['from_date']
+        from_date = (request.POST['from_date'])
         end_date = request.POST['end_date']
         amount = request.POST['amount']
         return HttpResponse(json.dumps(investment(datetime.strptime(from_date, '%Y-%m-%d'),datetime.strptime(end_date, '%Y-%m-%d'),float(amount))))
