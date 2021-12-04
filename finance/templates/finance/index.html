@@ -59,100 +59,179 @@
     </div>
   </nav>
  <h1>Personal Dashboard</h1> 
+    <div class='loading'></div>
+    <h1>Select Ticker</h1>
+    <select name="" id="choose_ticker">
+        <option value="NDX">NASDAQ</option>
+        <option value="AAPL">APPLE</option>
+        <option value="MSFT">MICROSOFT</option>
+        <option value="AMZN">AMAZON</option>
+        <option value="FB">FACEBOOK</option>
+        <option value="TSLA">TESLA</option>
 
+    </select>
     <div id="table_container">
-      
-        <h2>APPLE</h2>
-        <table id="AAPL_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        
-        <h2>MICROSOFT</h2>
-        <table id="MSFT_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        <div class='loading'></div>
-        <h2>AMAZON</h2>
-        <table id="AMZN_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        <div class='loading'></div>
-        <h2>FACEBOOK</h2>
-        <table id="FB_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        <div class='loading'></div>
-        <h2>TESLA</h2>
-        <table id="TSLA_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        <div class='loading'></div>
-        <h2>NASDAQ 100</h2>
-        <table id="NDX_data">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Stock</th>
-                    <th>BenchMark</th>
-                    <th>Active Return</th>
-                </tr>
-            </thead>
-        </table>
-        <div class='loading'></div>
+        <div id="div_NDX" class="ticker" style="display: none;">
+            <b>NASDAQ</b>
+            Cummulative Table
+            <table id="NDX_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize Table
+            <table id="NDX_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="div_AAPL" class="ticker" style="display: none;">
+            APPLE
+            Cummulative
+            <table id="AAPL_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize
+            <table id="AAPL_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="div_MSFT" class="ticker" style="display: none;">
+            MICROSOFT
+            Cummulative
+            <table id="MSFT_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize
+            <table id="MSFT_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="div_AMZN" class="ticker" style="display: none;">
+            AMAZON
+            Cummulative
+            <table id="AMZN_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize
+            <table id="AMZN_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table> 
+        </div>
+        <div id="div_FB" class="ticker" style="display: none;">
+        FACEBOOK
+            Cummulative
+            <table id="FB_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize
+            <table id="FB_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="div_TSLA" class="ticker" style="display: none;">
+            TESLA
+            Commulative
+            <table id="TSLA_data">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+            Annualize
+            <table id="TSLA_data_a">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Stock</th>
+                        <th>BenchMark</th>
+                        <th>Active Return</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </body>
 <script>
-    $(document).ready(function(){
-        var data = {}
-        data.start_date = $('#start_date').val();
-        data.end_date = $('#end_date').val();
-        data.tickers = [];
-        $('.user_input:checked').each(function(){
-          data.tickers.push($(this).val());
-        });
-        data.amount = $('#amount').val();
+    $('#choose_ticker').on('change', function(){
+        var selected_ticker = $('#choose_ticker').val()
         $.ajax({
           url: 'calculate_ticker_data',
           type: 'POST',
-          data: data,
           dataType: 'json',
           success: function(response){
-            create_ticker_table(response);
+            create_ticker_table(response, selected_ticker);
           },
           error: function(response){
             console.log(response);
@@ -173,17 +252,23 @@ function create_dataset(data){
   return [dataset, data_keys];
 }
 
-function create_ticker_table(tickers){
+function create_ticker_table(tickers, selected_ticker){
   var ticker_list = Object.keys(tickers);
     for (var i = 0; i < ticker_list.length; i++) {
-    //   var table = `<table id="#${ticker_list[i]}_data"><table>`
-    //   $('#table_container').append(table);
-      var data = create_dataset(tickers[ticker_list[i]]['cumulative'])
-    //   console.log(data, `#${ticker_list[i]}_data`);
-      var x = $(`#${ticker_list[i]}_data`).DataTable({
-        data :data[0]
+      var data_cummulative = create_dataset(tickers[ticker_list[i]]['cumulative'])
+      var data_annualize = create_dataset(tickers[ticker_list[i]]['annualize'])
+      var cummulative = $(`#${ticker_list[i]}_data`).DataTable({
+        data :data_cummulative[0]
       })
-      console.log('datatable is builing', x)
+      var annualize = $(`#${ticker_list[i]}_data_a`).DataTable({
+        data :data_annualize[0]
+      })
+      $(`#div_${selected_ticker}`).show()
+      $('.ticker').each(function(){
+          if ($(this).val() != selected_ticker){
+              $(this).hide()
+          }
+      })
     }
     $('.loading').hide();
 }
