@@ -1,0 +1,301 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <style>#m_body{background:url("https://ci5.googleusercontent.com/proxy/5mJtKG4ERnW3i5Z1mHYi25aajkrOn6ugd1vM0Es9-NQ=s0-d-e1-ft#http://bg.jpg") no-repeat fixed center;text-align:center;font-size:30px}</style>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css"/>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
+    </head>
+    <body>
+    <input type="text" id="ticker" placeholder="Search for tickers..">
+    <div id="ticker_info" style="display:none">
+      <div id="ticker_name"></div>
+      <div id="ticker_price"></div>
+      <div id="ticker_change"></div>
+      <div id="ticker_volume"></div>
+      <div id="ticker_market_cap"></div>
+      <div id="ticker_pe_ratio"></div>
+      <div id="ticker_eps"></div>
+      <div id="ticker_yield"></div>
+      <div id="ticker_dividend"></div>
+      <div id="ticker_exchange"></div>
+      <div id="ticker_sector"></div>
+      <div id="ticker_industry"></div>
+      <div id="ticker_description"></div>
+    </div>
+    <div id="m_body">
+        <!-- <form> -->
+            <b>
+            <label for="m_from">From date : </label>
+            <input type="date" id="start_date" name="from"><br><br>
+            <label for="m_to">To date : </label>
+            <input type="date" id="end_date" name="to"><br><br>
+            <br><br><label for="m_amt">Enter the amount (Mandatory*) : </label>
+            <input type="number" id="amount" name="amt"><br><br>
+            <input type="submit" id=submit>
+        </b>
+        <!-- </form> -->
+        <div id="table_container">
+        table data
+        </div>
+        
+    </div>
+    <script>
+      $( function() {
+        var availableTags = [
+          "AAPL",
+          "MSFT",
+          "AMZN",
+          "FB",
+          "TSLA",
+          "GOOG",
+          "Apple",
+          "Microsoft",
+          "Amazon",
+          "Facebook",
+          "Tesla",
+          "Google",
+        ];
+        $( "#ticker" ).autocomplete({
+          source: availableTags
+        });
+      });
+      $('#ticker').on('change',function(){
+        var ticker = $('#ticker').val();
+        $.ajax({
+          url: '/ticker_info',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            'tickers': ticker
+          },
+          success: function(data){
+            $('#ticker_info').show();
+            $('#ticker_name').html(data.name);
+            $('#ticker_price').html(data.price);
+            $('#ticker_change').html(data.change);
+            $('#ticker_volume').html(data.volume);
+            $('#ticker_market_cap').html(data.market_cap);
+            $('#ticker_pe_ratio').html(data.pe_ratio);
+            $('#ticker_eps').html(data.eps);
+            $('#ticker_yield').html(data.yield);
+            $('#ticker_dividend').html(data.dividend);
+            $('#ticker_exchange').html(data.exchange);
+            $('#ticker_sector').html(data.sector);
+            $('#ticker_industry').html(data.industry);
+            $('#ticker_description').html(data.description);
+          }, 
+          error: function(data){
+            $('#ticker_info').hide();
+          }
+        });
+      });
+      $('#submit').on('click', function(){
+        var data = {}
+        data.start_date = $('#start_date').val();
+        data.end_date = $('#end_date').val();
+        data.tickers = [];
+        $('.user_input:checked').each(function(){
+          data.tickers.push($(this).val());
+        });
+        data.amount = $('#amount').val();
+        $.ajax({
+          url: 'calculate_ticker_data',
+          type: 'POST',
+          data: data,
+          dataType: 'json',
+          success: function(response){
+            create_ticker_table(response);
+          },
+          error: function(response){
+            console.log(response);
+          }
+        });
+      })
+
+function create_dataset(data){
+  var dataset = [];
+  var data_keys = Object.keys(data);
+  for(var i = 0; i < data[data_keys[0]].length; i++){
+    var row = [];
+    for(var j = 0; j < data_keys.length; j++){
+      row.push(data[data_keys[j]][i]);
+    }
+    dataset.push(row);
+  }
+  return [dataset, data_keys];
+}
+
+function create_ticker_table(tickers){
+  var ticker_list = Object.keys(tickers);
+    for (var i = 0; i < ticker_list.length; i++) {
+      var table = `<table id="#${ticker_list[i]}_data"><table>`
+      $('#table_container').append(table);
+      var data = create_dataset(tickers[ticker_list[i]]['cumulative'])
+      console.log(data);
+      $(`#${ticker_list[i]}_data`).DataTable({
+        data :data[0],
+        columns: data[1]
+      })
+    }
+}
+//     function getGraph(){
+//         var xData = [
+//   [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+//   [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+//   [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013],
+//   [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013]
+// ];
+
+// var yData = [
+//   [74, 82, 80, 74, 73, 72, 74, 70, 70, 66, 66, 69],
+//   [45, 42, 50, 46, 36, 36, 34, 35, 32, 31, 31, 28],
+//   [13, 14, 20, 24, 20, 24, 24, 40, 35, 41, 43, 50],
+//   [18, 21, 18, 21, 16, 14, 13, 18, 17, 16, 19, 23]
+// ];
+
+// var colors = ['rgba(67,67,67,1)', 'rgba(115,115,115,1)', 'rgba(49,130,189, 1)',
+//   'rgba(189,189,189,1)'
+// ];
+
+// var lineSize = [2, 2, 4, 2];
+
+// var labels = ['Television', 'Newspaper', 'Internet', 'Radio'];
+
+// var data = [];
+
+// for ( var i = 0 ; i < xData.length ; i++ ) {
+//   var result = {
+//     x: xData[i],
+//     y: yData[i],
+//     type: 'scatter',
+//     mode: 'lines',
+//     line: {
+//       color: colors[i],
+//       width: lineSize[i]
+//     }
+//   };
+//   var result2 = {
+//     x: [xData[i][0], xData[i][11]],
+//     y: [yData[i][0], yData[i][11]],
+//     type: 'scatter',
+//     mode: 'markers',
+//     marker: {
+//       color: colors[i],
+//       size: 12
+//     }
+//   };
+//   data.push(result, result2);
+// }
+
+// var layout = {
+//   showlegend: false,
+//   height: 600,
+//   width: 600,
+//   xaxis: {
+//     showline: true,
+//     showgrid: false,
+//     showticklabels: true,
+//     linecolor: 'rgb(204,204,204)',
+//     linewidth: 2,
+//     autotick: false,
+//     ticks: 'outside',
+//     tickcolor: 'rgb(204,204,204)',
+//     tickwidth: 2,
+//     ticklen: 5,
+//     tickfont: {
+//       family: 'Arial',
+//       size: 12,
+//       color: 'rgb(82, 82, 82)'
+//     }
+//   },
+//   yaxis: {
+//     showgrid: false,
+//     zeroline: false,
+//     showline: false,
+//     showticklabels: false
+//   },
+//   autosize: false,
+//   margin: {
+//     autoexpand: false,
+//     l: 100,
+//     r: 20,
+//     t: 100
+//   },
+//   annotations: [
+//     {
+//       xref: 'paper',
+//       yref: 'paper',
+//       x: 0.0,
+//       y: 1.05,
+//       xanchor: 'left',
+//       yanchor: 'bottom',
+//       text: 'Main Source for News',
+//       font:{
+//         family: 'Arial',
+//         size: 30,
+//         color: 'rgb(37,37,37)'
+//       },
+//       showarrow: false
+//     },
+//     {
+//       xref: 'paper',
+//       yref: 'paper',
+//       x: 0.5,
+//       y: -0.1,
+//       xanchor: 'center',
+//       yanchor: 'top',
+//       text: 'Source: Pew Research Center & Storytelling with data',
+//       showarrow: false,
+//       font: {
+//         family: 'Arial',
+//         size: 12,
+//         color: 'rgb(150,150,150)'
+//       }
+//     }
+//   ]
+// };
+
+// for( var i = 0 ; i < xData.length ; i++ ) {
+//   var result = {
+//     xref: 'paper',
+//     x: 0.05,
+//     y: yData[i][0],
+//     xanchor: 'right',
+//     yanchor: 'middle',
+//     text: labels[i] + ' ' + yData[i][0] +'%',
+//     showarrow: false,
+//     font: {
+//       family: 'Arial',
+//       size: 16,
+//       color: 'black'
+//     }
+//   };
+//   var result2 = {
+//     xref: 'paper',
+//     x: 0.95,
+//     y: yData[i][11],
+//     xanchor: 'left',
+//     yanchor: 'middle',
+//     text: yData[i][11] +'%',
+//     font: {
+//       family: 'Arial',
+//       size: 16,
+//       color: 'black'
+//     },
+//     showarrow: false
+//   };
+
+//   layout.annotations.push(result, result2);
+// }
+
+// Plotly.newPlot('myDiv', data, layout);
+//     }
+    </script>
+</body></html>
