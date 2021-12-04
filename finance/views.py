@@ -32,7 +32,7 @@ def create_session():
     session.headers['x-api-key'] = settings.API_KEY
     return session
 
-def get_stock_dataframe(ticker,start_date,end_date):
+def get_stock_dataframe(ticker,start_date='2015-12-31',end_date='2021-12-31'):
     df =  yfinance.download(ticker, start=start_date, end=end_date,interval ="1mo",session=create_session())
     df_adjclose = df.drop(['Open','High','Low','Close','Volume'], axis = 1)
     df_adjclose=df_adjclose.dropna()
@@ -56,8 +56,10 @@ def calculate_monthly_return(df):
 def calculate_ticker_data(request):
     tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
     combined_data = {'column_headers':tickers}
+    stock = dict()
+    dashboard = dict()
     for ticker in tickers:
-        # stock[ticker] = get_stock_dataframe(ticker)
+        stock[ticker] = get_stock_dataframe(ticker)
         cumulative, annualize = get_performance(ticker)
         dashboard[ticker] = {'cumulative':cumulative,'annualize':annualize}
     return HttpResponse(json.dumps(dashboard))
@@ -164,7 +166,7 @@ def investment(start_date, end_date, investment_amount):
     tickers = ['NDX','AAPL','MSFT','AMZN','FB','TSLA']
     stock = dict()
     for ticker in tickers:
-        stock[ticker] = get_stock_dataframe(ticker)
+        stock[ticker] = get_stock_dataframe(ticker,start_date,end_date)
 
     AAPL_list = stock['AAPL']['Monthly Return Perc'].tolist()
     AMZN_list = stock['AMZN']['Monthly Return Perc'].tolist()
