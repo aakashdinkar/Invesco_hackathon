@@ -224,14 +224,13 @@
     </div>
 </body>
 <script>
-    $('#choose_ticker').on('change', function(){
-        var selected_ticker = $('#choose_ticker').val()
+    $(document).ready(function(){
         $.ajax({
           url: 'calculate_ticker_data',
           type: 'POST',
           dataType: 'json',
           success: function(response){
-            create_ticker_table(response, selected_ticker);
+            create_ticker_table(response);
           },
           error: function(response){
             console.log(response);
@@ -263,14 +262,16 @@ function create_ticker_table(tickers, selected_ticker){
       var annualize = $(`#${ticker_list[i]}_data_a`).DataTable({
         data :data_annualize[0]
       })
-      $(`#div_${selected_ticker}`).show()
-      $('.ticker').each(function(){
-          if ($(this).val() != selected_ticker){
-              $(this).hide()
-          }
-      })
     }
     $('.loading').hide();
 }
+
+$('#choose_ticker').on('change', function(){
+    var selected_ticker = $(this).val()
+    $('.ticker').each(function(){
+            $(this).hide()
+    })
+    $(`#div_${selected_ticker}`).show()
+})
 </script>
 </html>
