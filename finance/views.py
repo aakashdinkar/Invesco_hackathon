@@ -32,7 +32,7 @@ def create_session():
     session.headers['x-api-key'] = settings.API_KEY
     return session
 
-def get_stock_dataframe(ticker,start_date='2015-12-01',end_date='2021-12-31'):
+def get_stock_dataframe(ticker,start_date='2015-12-01',end_date='2020-12-31'):
     df =  yfinance.download(ticker, start=start_date, end=end_date,interval ="1mo",session=create_session())
     df_adjclose = df.drop(['Open','High','Low','Close','Volume'], axis = 1)
     df_adjclose=df_adjclose.dropna()

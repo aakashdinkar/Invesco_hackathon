@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
-<body>
+<body style='margin:50px;'>
   <style text="text/css">
     .loading {
       border: 16px solid #f3f3f3; /* Light grey */
@@ -58,10 +58,11 @@
       </div>
     </div>
   </nav>
- <h1>Personal Dashboard</h1> 
+ <h1>Pricing Dashboard</h1> 
     <div class='loading'></div>
-    <h1>Select Ticker</h1>
+    <center><h1>Select Ticker</h1>
     <select name="" id="choose_ticker">
+        <option value="">Select one</option>
         <option value="NDX">NASDAQ</option>
         <option value="AAPL">APPLE</option>
         <option value="MSFT">MICROSOFT</option>
@@ -70,6 +71,7 @@
         <option value="TSLA">TESLA</option>
 
     </select>
+  </center>
     <div id="table_container">
         <div id="div_NDX" class="ticker" style="display: none;">
             <b>NASDAQ</b>
@@ -97,7 +99,8 @@
             </table>
         </div>
         <div id="div_AAPL" class="ticker" style="display: none;">
-            APPLE
+            
+            <b>APPLE</b>
             Cummulative
             <table id="AAPL_data">
                 <thead>
@@ -122,7 +125,8 @@
             </table>
         </div>
         <div id="div_MSFT" class="ticker" style="display: none;">
-            MICROSOFT
+            
+            <b>MICROSOFT</b>
             Cummulative
             <table id="MSFT_data">
                 <thead>
@@ -147,7 +151,7 @@
             </table>
         </div>
         <div id="div_AMZN" class="ticker" style="display: none;">
-            AMAZON
+            <b>AMAZON</b>
             Cummulative
             <table id="AMZN_data">
                 <thead>
@@ -172,7 +176,8 @@
             </table> 
         </div>
         <div id="div_FB" class="ticker" style="display: none;">
-        FACEBOOK
+        
+        <b>FACEBOOK</b>
             Cummulative
             <table id="FB_data">
                 <thead>
@@ -197,7 +202,8 @@
             </table>
         </div>
         <div id="div_TSLA" class="ticker" style="display: none;">
-            TESLA
+            
+            <b>TESLA</b>
             Commulative
             <table id="TSLA_data">
                 <thead>
@@ -241,6 +247,7 @@
 function create_dataset(data){
   var dataset = [];
   var data_keys = Object.keys(data);
+  console.log(data);
   for(var i = 0; i < data[data_keys[0]].length; i++){
     var row = [];
     for(var j = 0; j < data_keys.length; j++){
@@ -248,19 +255,24 @@ function create_dataset(data){
     }
     dataset.push(row);
   }
-  return [dataset, data_keys];
+  return dataset;
 }
 
 function create_ticker_table(tickers, selected_ticker){
   var ticker_list = Object.keys(tickers);
     for (var i = 0; i < ticker_list.length; i++) {
+      console.log(ticker_list[i]);
       var data_cummulative = create_dataset(tickers[ticker_list[i]]['cumulative'])
       var data_annualize = create_dataset(tickers[ticker_list[i]]['annualize'])
       var cummulative = $(`#${ticker_list[i]}_data`).DataTable({
-        data :data_cummulative[0]
+        data :data_cummulative,
+        ordering: false,
+        paging:false,
       })
       var annualize = $(`#${ticker_list[i]}_data_a`).DataTable({
-        data :data_annualize[0]
+        data :data_annualize,
+        ordering: false,
+        paging:false,
       })
     }
     $('.loading').hide();
